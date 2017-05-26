@@ -203,10 +203,10 @@ public class Knn implements Classifier {
 	 * @param neighbors - a set of K nearest neighbors
 	 * @return the majority vote on the class of the neighbors
 	 */
-	private double getClassVoteResult(Instances neighbors) {
+	private double getClassVoteResult(ArrayList<Neighbor> neighbors) {
 		int[] countClassifications = new int[2];
-		for (Instance inst : neighbors) {
-			countClassifications[(int) inst.classValue()]++;
+		for (Neighbor inst : neighbors) {
+			countClassifications[(int) inst.instance.classValue()]++;
 		}
 		if (countClassifications[0] > countClassifications[1]) {
 			return 0;
@@ -224,8 +224,16 @@ public class Knn implements Classifier {
 	 * neighbor's class is weighted by the neighbor’s distance from the 
 	 * instance being classified.
 	 */
-	private double getWeightedClassVoteResult(Instances neighbors) {
-		return 0;
+	private double getWeightedClassVoteResult(ArrayList<Neighbor> neighbors) {
+		double[] countClassifications = new double[2];
+		for (Neighbor inst : neighbors) {
+			double vote = 1.0 / Math.pow(inst.distance, 2);
+			countClassifications[(int) inst.instance.classValue()] += vote; 
+		}
+		if (countClassifications[0] > countClassifications[1]) {
+			return 0;
+		}
+		return 1;
 	}
 	
 	/**
