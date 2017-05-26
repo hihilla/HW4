@@ -65,12 +65,31 @@ public class Knn implements Classifier {
 	}
 
 	private void editedForward(Instances instances) {
-		//TODO: implement this method
+		Instances data = new Instances(instances);
+		for (Instance x : instances) {
+			data.remove(x);
+			m_trainingInstances = data;
+			if (classifyInstance(x) != x.classValue()) {
+				// if x is classify correctly by instances = {x}, 
+				// remove x from instances. else - return x to instances!
+				data.add(x);
+			}
+		}
+		m_trainingInstances = data;
 	}
 
 	private void editedBackward(Instances instances) {
-		
-		//TODO: implement this method
+		Instances data = new Instances(instances);
+		for (Instance x : instances) {
+			data.remove(x);
+			m_trainingInstances = data;
+			if (classifyInstance(x) == x.classValue()) {
+				// if x is NOT classify correctly by instances = {x}, 
+				// add x to instances. else - remove x from instances!
+				data.add(x);
+			}
+		}
+		m_trainingInstances = data;
 	}
 
 	/**
