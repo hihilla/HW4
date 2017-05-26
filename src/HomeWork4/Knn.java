@@ -174,8 +174,8 @@ public class Knn implements Classifier {
 		
 		// count population
 		for (Instance instance : instances) {
-			boolean conditionPositive = instance.classValue() == 1;
-			boolean predictionPositive = classifyInstance(instance) == instance.classValue();
+			boolean conditionPositive = instance.classValue() == 0;
+			boolean predictionPositive = classifyInstance(instance) == 0;
 			if (predictionPositive && conditionPositive) {
 				truePositive++;
 			} else if (predictionPositive && !conditionPositive) {
