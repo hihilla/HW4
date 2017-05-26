@@ -22,8 +22,6 @@ public class Knn implements Classifier {
 		m_editMode = editMode;
 	}
 	
-	private Instances m_trainingInstances;
-
 	/**
 	 * Builds a kNN from the training data. The method is already implemented 
 	 * using switch statement on the enum EditMode. This enum set the edit mode 
