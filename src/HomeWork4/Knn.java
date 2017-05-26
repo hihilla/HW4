@@ -19,6 +19,10 @@ public class Knn implements Classifier {
 		m_editMode = editMode;
 	}
 
+	/**
+	 * Builds a kNN from the training data. The method is already implemented using switch statement on the enum 
+	 * EditMode. This enum set the edit mode to one of its possibilities (None, Forwards, Backwards).
+	 */
 	@Override
 	public void buildClassifier(Instances arg0) throws Exception {
 		switch (m_editMode) {
@@ -35,6 +39,8 @@ public class Knn implements Classifier {
 			noEdit(arg0);
 			break;
 		}
+		/* You should implement each one of the helper methods noEdit, editedForward and editedBackward (the last 2 
+		 * describe later). */
 	}
 
 	@Override
@@ -50,6 +56,10 @@ public class Knn implements Classifier {
 		//TODO: implement this method
 	}
 
+	/**
+	 * Store the training set in the m_trainingInstances without editing.
+	 * @param instances
+	 */
 	private void noEdit(Instances instances) {
 		m_trainingInstances = new Instances(instances);
 	}
@@ -64,5 +74,94 @@ public class Knn implements Classifier {
 	public Capabilities getCapabilities() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	/**
+	 * Calculate the average error on a given instances set. The average error is the total number of classification 
+	 * mistakes on the input instances set and divides that by the number of instances in the input set
+	 * @param instace
+	 * @return Average error (double). 
+	 */
+	private double calcAvgError(Instance instace) {
+		return 0;
+	}
+	
+	/**
+	 * Calculate the Precision & Recall on a given instances set.
+	 * @param instances
+	 * @return double array of size 2. First index for Precision and the second for Recall.
+	 */
+	private double[] calcConfusion(Instances instances) {
+		return null;
+	}
+	
+	/**
+	 * Calculate the cross validation error = average error on all folds.
+	 * @param instances
+	 * @return Average fold error (double)
+	 */
+	private double crossValidationError(Instances instances) {
+		return 0;
+	}
+	
+	/**
+	 * Find the K nearest neighbors for the instance being classified.
+	 * @param instance
+	 * @return finds the K nearest neighbors (and perhaps their distances)
+	 */
+	private Instances findNearestNeighbors(Instance instance) {
+		return null;
+	}
+	
+	/**
+	 * Calculate the majority class of the neighbors.
+	 * @param neighbors - a set of K nearest neighbors
+	 * @return the majority vote on the class of the neighbors
+	 */
+	private double getClassVoteResult(Instances neighbors) {
+		return 0;
+	}
+	
+	/**
+	 * Calculate the weighted majority class of the neighbors. In this method the class vote is normalized by the 
+	 * distance from the instance being classified. Instead of giving one vote to every class, you give a vote of
+	 * 1/(distance from instance)^2 
+	 * @param neighbors - set of K nearest neighbors (and perhaps their distances)
+	 * @return the majority vote on the class of the neighbors, where each neighbor's class is weighted by the 
+	 * neighbor’s distance from the instance being classified.
+	 */
+	private double getWeightedClassVoteResult(Instances neighbors) {
+		return 0;
+	}
+	
+	/**
+	 * Calculate distance between two instances
+	 * @param first instance
+	 * @param second instance
+	 * @return input instances’ distance according to the distance function that your algorithm is configured to use.
+	 */
+	private double distance(Instance first, Instance second) {
+		return 0;
+	}
+	
+	/**
+	 * Calculate l-p distance between two instances
+	 * @param first instance
+	 * @param second instance
+	 * @return the l-p distance between the two instances
+	 * note: p can be a variable of your class or you can set p some other way.
+	 */
+	private double lpDistance(Instance first, Instance second) {
+		return 0;
+	}
+	
+	/**
+	 * Calculate l-infinity distance between two instances
+	 * @param first instance
+	 * @param second instance
+	 * @return the l-infinity distance between two instances
+	 */
+	private double lInfinityDistance(Instance first, Instance second) {
+		return 0;
 	}
 }
