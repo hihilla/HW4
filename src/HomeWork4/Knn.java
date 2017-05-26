@@ -58,6 +58,7 @@ public class Knn implements Classifier {
 	}
 
 	private void editedBackward(Instances instances) {
+		
 		//TODO: implement this method
 	}
 
