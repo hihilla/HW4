@@ -10,9 +10,9 @@ public class Knn implements Classifier {
 	public enum EditMode {None, Forwards, Backwards};
 	private EditMode m_editMode = EditMode.None;
 	private Instances m_trainingInstances;
-	private int m_k;
-	private int m_p;
-	private String m_majority;
+	private int m_k; // {1, 2, …, 20}
+	private int m_p; // {infinity(0), 1, 2, 3}
+	private String m_majority; // {"uniform", "weighted"}
 
 	public EditMode getEditMode() {
 		return m_editMode;
@@ -169,7 +169,11 @@ public class Knn implements Classifier {
 	 * your algorithm is configured to use.
 	 */
 	private double distance(Instance first, Instance second) {
-		return 0;
+		if (m_p == 0) {
+			return lInfinityDistance(first, second);
+		} else {
+			return lpDistance(first, second);
+		}
 	}
 	
 	/**
@@ -180,9 +184,6 @@ public class Knn implements Classifier {
 	 * note: p can be a variable of your class or you can set p some other way.
 	 */
 	private double lpDistance(Instance first, Instance second) {
-		if (m_p == 0) {
-			return lInfinityDistance(first, second);
-		}
 		double distance = 0;
 		int numAttributes = first.numAttributes() - 1;
 		for (int i = 0; i < numAttributes; i++) {
@@ -200,9 +201,6 @@ public class Knn implements Classifier {
 	 * @return the l-infinity distance between two instances
 	 */
 	private double lInfinityDistance(Instance first, Instance second) {
-		if (m_p != 0) {
-			return lpDistance(first, second);
-		}
 		double distance = Double.MIN_VALUE;
 		int numAttributes = first.numAttributes() - 1;
 		for (int i = 0; i < numAttributes; i++) {
