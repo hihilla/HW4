@@ -1,5 +1,8 @@
 package HomeWork4;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import weka.classifiers.Classifier;
 import weka.core.Capabilities;
 import weka.core.Instance;
@@ -14,7 +17,7 @@ public class Knn implements Classifier {
 	private int m_p; // {infinity(0), 1, 2, 3}
 	private String m_majority; // {"uniform", "weighted"}
 	
-	private class Neighbor{
+	private class Neighbor implements Comparable<Neighbor>{
 		public Instance instance;
 		public double distance;
 		
@@ -23,6 +26,16 @@ public class Knn implements Classifier {
 			this.distance = distance;
 		}
 		
+		@Override
+		public int compareTo(Neighbor neighbor) {
+			double diff = this.distance - neighbor.distance;
+			if (diff < 0){
+				return -1;
+			} else if (diff > 0){
+				return 1;
+			}
+			return 0;
+		}
 	}
 
 	public EditMode getEditMode() {
@@ -165,12 +178,16 @@ public class Knn implements Classifier {
 	 */
 	private Instances findNearestNeighbors(Instance instance) {
 		int numOfTrainingInstances = m_trainingInstances.size();
-		int[] indexesOfkNN = 
+		Neighbor[] neighbors = new Neighbor[numOfTrainingInstances]; 
 		
-		
+		// array of all instances and their distance from the given instance
 		for (int i = 0; i < numOfTrainingInstances; i++){
-			
+			neighbors[i].instance = m_trainingInstances.get(i);
+			neighbors[i].distance = distance(neighbors[i].instance, instance);
 		}
+		// convert the array of neighbors to an array list (in prder to compare)
+		ArrayList<Neighbor> neighborsList = new ArrayList<Neighbor>(Arrays.asList(neighbors));
+		
 		
 		
 		return null;
