@@ -159,6 +159,9 @@ public class Knn implements Classifier {
 	 * for Recall.
 	 */
 	private double[] calcConfusion(Instances instances) {
+		double truePositive = 0;
+		double falsePositive = 0;
+		double falseNegative = 0;
 		return null;
 	}
 	
