@@ -20,8 +20,9 @@ public class Knn implements Classifier {
 	}
 
 	/**
-	 * Builds a kNN from the training data. The method is already implemented using switch statement on the enum 
-	 * EditMode. This enum set the edit mode to one of its possibilities (None, Forwards, Backwards).
+	 * Builds a kNN from the training data. The method is already implemented 
+	 * using switch statement on the enum EditMode. This enum set the edit mode 
+	 * to one of its possibilities (None, Forwards, Backwards).
 	 */
 	@Override
 	public void buildClassifier(Instances arg0) throws Exception {
@@ -39,8 +40,8 @@ public class Knn implements Classifier {
 			noEdit(arg0);
 			break;
 		}
-		/* You should implement each one of the helper methods noEdit, editedForward and editedBackward (the last 2 
-		 * describe later). */
+		/* You should implement each one of the helper methods noEdit, 
+		 * editedForward and editedBackward (the last 2 describe later). */
 	}
 
 	@Override
@@ -77,8 +78,9 @@ public class Knn implements Classifier {
 	}
 	
 	/**
-	 * Calculate the average error on a given instances set. The average error is the total number of classification 
-	 * mistakes on the input instances set and divides that by the number of instances in the input set
+	 * Calculate the average error on a given instances set. The average error is 
+	 * the total number of classification mistakes on the input instances set and 
+	 * divides that by the number of instances in the input set
 	 * @param instace
 	 * @return Average error (double). 
 	 */
@@ -89,7 +91,8 @@ public class Knn implements Classifier {
 	/**
 	 * Calculate the Precision & Recall on a given instances set.
 	 * @param instances
-	 * @return double array of size 2. First index for Precision and the second for Recall.
+	 * @return double array of size 2. First index for Precision and the second 
+	 * for Recall.
 	 */
 	private double[] calcConfusion(Instances instances) {
 		return null;
@@ -123,12 +126,14 @@ public class Knn implements Classifier {
 	}
 	
 	/**
-	 * Calculate the weighted majority class of the neighbors. In this method the class vote is normalized by the 
-	 * distance from the instance being classified. Instead of giving one vote to every class, you give a vote of
-	 * 1/(distance from instance)^2 
+	 * Calculate the weighted majority class of the neighbors. In this method 
+	 * the class vote is normalized by the distance from the instance being 
+	 * classified. Instead of giving one vote to every class, you give a vote 
+	 * of 1/(distance from instance)^2 
 	 * @param neighbors - set of K nearest neighbors (and perhaps their distances)
-	 * @return the majority vote on the class of the neighbors, where each neighbor's class is weighted by the 
-	 * neighbor’s distance from the instance being classified.
+	 * @return the majority vote on the class of the neighbors, where each 
+	 * neighbor's class is weighted by the neighbor’s distance from the 
+	 * instance being classified.
 	 */
 	private double getWeightedClassVoteResult(Instances neighbors) {
 		return 0;
@@ -138,7 +143,8 @@ public class Knn implements Classifier {
 	 * Calculate distance between two instances
 	 * @param first instance
 	 * @param second instance
-	 * @return input instances’ distance according to the distance function that your algorithm is configured to use.
+	 * @return input instances’ distance according to the distance function that 
+	 * your algorithm is configured to use.
 	 */
 	private double distance(Instance first, Instance second) {
 		return 0;
