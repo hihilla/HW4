@@ -14,22 +14,15 @@ public class Knn implements Classifier {
 	public enum EditMode {
 		None, Forwards, Backwards
 	};
-
-	private EditMode m_editMode = EditMode.None;
-	private Instances m_trainingInstances;
-	private int m_k; // {1, 2, …, 20}
-	private int m_p; // {infinity(0), 1, 2, 3}
-	private String m_majority; // {"uniform", "weighted"}
-
 	private class Neighbor implements Comparable<Neighbor> {
 		public Instance instance;
 		public double distance;
-
+		
 		public Neighbor(Instance instance, double distance) {
 			this.instance = instance;
 			this.distance = distance;
 		}
-
+		
 		@Override
 		public int compareTo(Neighbor neighbor) {
 			double diff = this.distance - neighbor.distance;
@@ -41,6 +34,12 @@ public class Knn implements Classifier {
 			return 0;
 		}
 	}
+
+	private EditMode m_editMode = EditMode.None;
+	private Instances m_trainingInstances;
+	private int m_k; // {1, 2, …, 20}
+	private int m_p; // {infinity(0), 1, 2, 3}
+	private String m_majority; // {"uniform", "weighted"}
 
 	public EditMode getEditMode() {
 		return m_editMode;
@@ -98,17 +97,17 @@ public class Knn implements Classifier {
 	}
 
 	private void editedBackward(Instances instances) {
+		m_trainingInstances = new Instances(instances);
 		Instances data = new Instances(instances);
+		data.delete();
 		for (Instance x : instances) {
-			data.remove(x);
-			m_trainingInstances = data;
 			if (classifyInstance(x) == x.classValue()) {
 				// if x is NOT classify correctly by instances = {x},
 				// add x to instances. else - remove x from instances!
 				data.add(x);
 			}
 		}
-		m_trainingInstances = data;
+		m_trainingInstances = new Instances(data);
 	}
 
 	/**
@@ -238,6 +237,9 @@ public class Knn implements Classifier {
 	 * @return the majority vote on the class of the neighbors
 	 */
 	private double getClassVoteResult(ArrayList<Neighbor> neighbors) {
+		if (neighbors.isEmpty()) {
+			return 0; // arbitrary return value for empty neighbors set
+		}
 		int[] countClassifications = new int[2];
 		for (Neighbor inst : neighbors) {
 			countClassifications[(int) inst.instance.classValue()]++;
@@ -261,6 +263,9 @@ public class Knn implements Classifier {
 	 *         instance being classified.
 	 */
 	private double getWeightedClassVoteResult(ArrayList<Neighbor> neighbors) {
+		if (neighbors.isEmpty()) {
+			return 0; // arbitrary return value for empty neighbors set
+		}
 		double[] countClassifications = new double[2];
 		for (Neighbor inst : neighbors) {
 			double vote = 1.0 / Math.pow(inst.distance, 2);
