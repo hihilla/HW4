@@ -9,7 +9,7 @@ public class Knn implements Classifier {
 	
 	public enum EditMode {None, Forwards, Backwards};
 	private EditMode m_editMode = EditMode.None;
-
+	private Instances m_trainingInstances;
 
 	public EditMode getEditMode() {
 		return m_editMode;
