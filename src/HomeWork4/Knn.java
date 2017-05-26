@@ -2,6 +2,7 @@ package HomeWork4;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 import weka.classifiers.Classifier;
 import weka.core.Capabilities;
@@ -174,9 +175,9 @@ public class Knn implements Classifier {
 	/**
 	 * Find the K nearest neighbors for the instance being classified.
 	 * @param instance
-	 * @return finds the K nearest neighbors (and perhaps their distances)
+	 * @return K nearest neighbors and their distances 
 	 */
-	private Instances findNearestNeighbors(Instance instance) {
+	private ArrayList findNearestNeighbors(Instance instance) {
 		int numOfTrainingInstances = m_trainingInstances.size();
 		Neighbor[] neighbors = new Neighbor[numOfTrainingInstances]; 
 		
@@ -185,12 +186,16 @@ public class Knn implements Classifier {
 			neighbors[i].instance = m_trainingInstances.get(i);
 			neighbors[i].distance = distance(neighbors[i].instance, instance);
 		}
-		// convert the array of neighbors to an array list (in prder to compare)
+		// convert the array of neighbors to an array list (in order to compare)
 		ArrayList<Neighbor> neighborsList = new ArrayList<Neighbor>(Arrays.asList(neighbors));
 		
+		// sorts the array list of neighbors
+		Collections.sort(neighborsList);
 		
+		// takes only the first (smallest) k neighbors and puts in a new array list 
+		ArrayList<Neighbor> kNN = new ArrayList<>(neighborsList.subList(0, m_k - 1));
 		
-		return null;
+		return kNN;
 	}
 	
 	/**
