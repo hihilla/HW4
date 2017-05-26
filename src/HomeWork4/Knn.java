@@ -13,6 +13,17 @@ public class Knn implements Classifier {
 	private int m_k; // {1, 2, …, 20}
 	private int m_p; // {infinity(0), 1, 2, 3}
 	private String m_majority; // {"uniform", "weighted"}
+	
+	private class Neighbor{
+		public Instance instance;
+		public double distance;
+		
+		public Neighbor(Instance instance, double distance){
+			this.instance = instance;
+			this.distance = distance;
+		}
+		
+	}
 
 	public EditMode getEditMode() {
 		return m_editMode;
@@ -134,6 +145,15 @@ public class Knn implements Classifier {
 	 * @return finds the K nearest neighbors (and perhaps their distances)
 	 */
 	private Instances findNearestNeighbors(Instance instance) {
+		int numOfTrainingInstances = m_trainingInstances.size();
+		int[] indexesOfkNN = 
+		
+		
+		for (int i = 0; i < numOfTrainingInstances; i++){
+			
+		}
+		
+		
 		return null;
 	}
 	
