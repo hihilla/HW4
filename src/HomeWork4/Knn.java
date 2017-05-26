@@ -180,7 +180,7 @@ public class Knn implements Classifier {
 	 * @param instance
 	 * @return K nearest neighbors and their distances 
 	 */
-	private ArrayList findNearestNeighbors(Instance instance) {
+	private ArrayList<Neighbor> findNearestNeighbors(Instance instance) {
 		int numOfTrainingInstances = m_trainingInstances.size();
 		Neighbor[] neighbors = new Neighbor[numOfTrainingInstances]; 
 		
