@@ -18,6 +18,8 @@ public class Knn implements Classifier {
 	public void setEditMode(EditMode editMode) {
 		m_editMode = editMode;
 	}
+	
+	private Instances m_trainingInstances;
 
 	/**
 	 * Builds a kNN from the training data. The method is already implemented 
@@ -47,6 +49,7 @@ public class Knn implements Classifier {
 	@Override
 	public double classifyInstance(Instance instance) {
 		//TODO: implement this method
+		return 0;
 	}
 
 	private void editedForward(Instances instances) {
@@ -84,8 +87,24 @@ public class Knn implements Classifier {
 	 * @param instace
 	 * @return Average error (double). 
 	 */
-	private double calcAvgError(Instance instace) {
-		return 0;
+	private double calcAvgError(Instances instances) {
+		int numOfInstances = instances.numInstances();
+		int numOfMistakes= 0;
+		Instance instance;
+		
+		// goes through each instances and check the rediction is
+		// it's actual classification, otherwise counts to mistakes
+		for (int i = 0; i < numOfInstances; i++){
+			instance = instances.instance(i);
+			if (instance.classValue() != classifyInstance(instance)){
+				numOfMistakes++;
+			}
+		}
+		
+		// calculates the average error...
+		double avgError = numOfMistakes / (double) numOfInstances; 
+		
+		return avgError;
 	}
 	
 	/**
