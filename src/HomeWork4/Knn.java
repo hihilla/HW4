@@ -182,7 +182,14 @@ public class Knn implements Classifier {
 	 * @return the majority vote on the class of the neighbors
 	 */
 	private double getClassVoteResult(Instances neighbors) {
-		return 0;
+		int[] countClassifications = new int[2];
+		for (Instance inst : neighbors) {
+			countClassifications[(int) inst.classValue()]++;
+		}
+		if (countClassifications[0] > countClassifications[1]) {
+			return 0;
+		}
+		return 1;
 	}
 	
 	/**
