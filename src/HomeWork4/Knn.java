@@ -185,7 +185,7 @@ public class Knn implements Classifier {
 		double distance = 0;
 		int numAttributes = first.numAttributes() - 1;
 		for (int i = 0; i < numAttributes; i++) {
-			double tempCalc = first.value(i) - second.value(i);
+			double tempCalc = Math.abs(first.value(i) - second.value(i));
 			tempCalc = Math.pow(tempCalc, m_p);
 			distance += tempCalc;
 		}
