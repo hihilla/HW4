@@ -213,7 +213,7 @@ public class Knn implements Classifier {
 
 		// array of all instances and their distance from the given instance
 		for (int i = 0; i < numOfTrainingInstances; i++) {
-			neighbors[i] = new Neighbor(m_trainingInstances.get(i),
+			neighbors[i] = new Neighbor(m_trainingInstances.get(i), 
 										distance(m_trainingInstances.get(i), instance));
 		}
 		// convert the array of neighbors to an array list (in order to compare)
@@ -272,6 +272,7 @@ public class Knn implements Classifier {
 		double[] countClassifications = new double[m_trainingInstances.classAttribute().numValues()];
 		for (Neighbor inst : neighbors) {
 			double vote = 1.0 / Math.pow(inst.distance, 2);
+			System.out.println(vote);
 			countClassifications[(int) inst.instance.classValue()] += vote;
 		}
 		int maxClass = 0;
