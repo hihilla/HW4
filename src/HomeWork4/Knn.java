@@ -149,7 +149,7 @@ public class Knn implements Classifier {
 	 * @param instace
 	 * @return Average error (double).
 	 */
-	private double calcAvgError(Instances instances) {
+	public double calcAvgError(Instances instances) {
 		int numOfInstances = instances.numInstances();
 		int numOfMistakes = 0;
 		Instance instance;
