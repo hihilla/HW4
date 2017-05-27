@@ -144,40 +144,49 @@ public class MainHW4 {
 				+ "The average Recall for the cancer dataset is: %f\n", confusion[0], confusion[1]);
 	}
 
-	private static void secondPhase(Instances instances, int k, int p, String majority) {
+	/*private static void secondPhase(Instances instances, int k, int p, String majority) {
 		int numOfInstances = instances.size();
 		int[] numOfFolds = {numOfInstances, 50, 10, 5, 3 };
 		
 		// for every possible number of folding, prints the relevant outputs
 		for (int i : numOfFolds) {
+			System.out.printf("----------------------------/n"
+								+ "Results for %d folds:/n"
+								+ "----------------------------/n", i);
 			long startTime = System.nanoTime();
 			double crossValdErrNonEdited = crossValidationError(instances, i, k, p, majority, EditMode.None);
 			long totalElapseTimeNonEdited = System.nanoTime() - startTime;
 			long avgElapseTimeNonEdited = totalElapseTimeNonEdited / i;
-			int instancesInFold = numOfInstances / i;
-			int instancesInTrainingSet = instancesInFold * i * (i -1);
+			int instancesInFoldNonEdited = instances.size() / i;
+			int instancesInTrainingSetNonEdited = instancesInFoldNonEdited * i * (i -1);
 			
 			startTime = System.nanoTime();
 			double crossValdErrForwards = crossValidationError(instances, i, k, p, majority, EditMode.Forwards);
 			long totalElapseTimeForwards = System.nanoTime() - startTime;
 			long avgElapseTimeForwards = totalElapseTimeForwards / i;
+			int instancesInFoldForwards =  XXX / i;
+			int instancesInTrainingSetForwards = instancesInFoldForwards * i * (i -1);
+
 			
 			startTime = System.nanoTime();
 			double crossValdErrBackwards = crossValidationError(instances, i, k, p, majority, EditMode.Backwards);
 			long totalElapseTimeBackwards = System.nanoTime() - startTime;
 			long avgElapseTimeBackwards = totalElapseTimeBackwards / i;
+			int instancesInFoldBackwards = XXX / i;
+			int instancesInTrainingSetBackwards = instancesInFoldForwards * i * (i -1);
 
-//			System.out.printf("Cross validation error of None-Edited knn on glass dataset is %f <error> and the average elapsed time is %f <average_elapsed_time_in_nano_seconds> /n"
-//						+ "The total elapsed time is: %f <total_elapsed_time_in_nano_seconds> /n"
-//						+ "The total number of instances used in the classification phase is: %d <number of training instances> /n"
-//						+ "Cross validation error of Forwards-Edited knn on glass dataset is %f <error> and the average elapsed time is %f <average_elapsed_time_in_nano_seconds> /n "
-//						+ "The total elapsed time is: %f <total_elapsed_time_in_nano_seconds> /n"
-//						+ "The total number of instances used in the classification phase is: %d <number of training instances>/n"
-//						+ "Cross validation error of Backwards-Edited knn on glass dataset is %f <error> and the average elapsed time is %f <average_elapsed_time_in_nano_seconds>/n "
-//						+ "The total elapsed time is: %f <total_elapsed_time_in_nano_seconds>/n"
-//						+ "The total number of instances used in the classification phase is: %d <number of training instances>",
-//						crossValdErrNonEdited, avgElapseTimeNonEdited, totalElapseTimeNonEdited, instancesInTrainingSet,
-//						);
+			System.out.printf("Cross validation error of None-Edited knn on glass dataset is %f and the average elapsed time is %f /n"
+						+ "The total elapsed time is: %f /n"
+						+ "The total number of instances used in the classification phase is: %d /n"
+						+ "Cross validation error of Forwards-Edited knn on glass dataset is %f and the average elapsed time is %f /n "
+						+ "The total elapsed time is: %f /n"
+						+ "The total number of instances used in the classification phase is: %d <number of training instances>/n"
+						+ "Cross validation error of Backwards-Edited knn on glass dataset is %f <error> and the average elapsed time is %f <average_elapsed_time_in_nano_seconds>/n "
+						+ "The total elapsed time is: %f <total_elapsed_time_in_nano_seconds>/n"
+						+ "The total number of instances used in the classification phase is: %d <number of training instances>",
+						crossValdErrNonEdited, avgElapseTimeNonEdited, totalElapseTimeNonEdited, instancesInTrainingSetNonEdited,
+						crossValdErrForwards, avgElapseTimeForwards, totalElapseTimeForwards,
+						);
 		}
-	}
+	}*/
 }
