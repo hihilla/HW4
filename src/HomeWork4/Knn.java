@@ -70,16 +70,20 @@ public class Knn implements Classifier {
 			noEdit(arg0);
 			break;
 		}
-		/*
-		 * You should implement each one of the helper methods noEdit,
-		 * editedForward and editedBackward (the last 2 describe later).
-		 */
 	}
-
+	/**
+	 * receives an instance and classify it according to it's k nearest neighbors
+	 */
 	@Override
 	public double classifyInstance(Instance instance) {
-		// TODO: implement this method
-		return 0;
+		// array list of the kNN of the given instance
+		ArrayList<Neighbor> kNN = new ArrayList<>(findNearestNeighbors(instance));
+		
+		if (m_majority == "uniform"){
+			return getClassVoteResult(kNN);
+		} else { // majority == weighted for sure
+			return getWeightedClassVoteResult(kNN);
+		}
 	}
 
 	private void editedForward(Instances instances) {
@@ -259,7 +263,7 @@ public class Knn implements Classifier {
 	 * @param neighbors
 	 *            - set of K nearest neighbors (and perhaps their distances)
 	 * @return the majority vote on the class of the neighbors, where each
-	 *         neighbor's class is weighted by the neighbor’s distance from the
+	 *         neighbor's class is weighted by the neighbors distance from the
 	 *         instance being classified.
 	 */
 	private double getWeightedClassVoteResult(ArrayList<Neighbor> neighbors) {
