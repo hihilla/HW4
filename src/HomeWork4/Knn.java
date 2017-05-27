@@ -33,13 +33,19 @@ public class Knn implements Classifier {
 			}
 			return 0;
 		}
-	}
+	};
 
 	private EditMode m_editMode = EditMode.None;
 	private Instances m_trainingInstances;
 	private int m_k; // {1, 2, …, 20}
 	private int m_p; // {infinity(0), 1, 2, 3}
 	private String m_majority; // {"uniform", "weighted"}
+	
+	public Knn(int k, int p, String majority) {
+		this.m_k = k;
+		this.m_p = p;
+		this.m_majority = majority;
+	}
 
 	public EditMode getEditMode() {
 		return m_editMode;
@@ -189,16 +195,6 @@ public class Knn implements Classifier {
 		double recall = truePositive / (truePositive + falseNegative);
 		double[] ret = {precision, recall};
 		return ret;
-	}
-
-	/**
-	 * Calculate the cross validation error = average error on all folds.
-	 * 
-	 * @param instances
-	 * @return Average fold error (double)
-	 */
-	private double crossValidationError(Instances instances) {
-		return 0;
 	}
 
 	/**

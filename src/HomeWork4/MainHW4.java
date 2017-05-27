@@ -32,5 +32,16 @@ public class MainHW4 {
 	public static void main(String[] args) throws Exception {
         //TODO: complete the Main method
 	}
+	
+
+	/**
+	 * Calculate the cross validation error = average error on all folds.
+	 * 
+	 * @param instances
+	 * @return Average fold error (double)
+	 */
+	private double crossValidationError(Instances instances) {
+		return 0;
+	}
 
 }
