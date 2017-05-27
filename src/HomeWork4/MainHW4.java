@@ -149,7 +149,7 @@ public class MainHW4 {
 				+ "The average Recall for the cancer dataset is: %f\n", confusion[0], confusion[1]);
 	}
 
-	private static void secondPhase(Instances instances, int k, int p, String majority) {
+	/*private static void secondPhase(Instances instances, int k, int p, String majority) {
 		int numOfInstances = instances.size();
 		int[] numOfFolds = {numOfInstances, 50, 10, 5, 3 };
 		
@@ -193,5 +193,5 @@ public class MainHW4 {
 						crossValdErrForwards, avgElapseTimeForwards, totalElapseTimeForwards,
 						);
 		}
-	}
+	}*/
 }
