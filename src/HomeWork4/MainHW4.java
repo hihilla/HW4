@@ -8,6 +8,7 @@ import java.util.Random;
 
 import HomeWork4.Knn.EditMode;
 import weka.core.Instances;
+import weka.gui.visualize.InstanceInfo;
 
 public class MainHW4 {
 
@@ -34,8 +35,8 @@ public class MainHW4 {
 		// load data
 		Instances cancerData = loadData("/Users/hilla/Documents/B/ML/6/HW4/src/cancer.txt");
 		Instances glassData = loadData("/Users/hilla/Documents/B/ML/6/HW4/src/glass.txt");
-		
-		// Finding the best hyper parameters using 10-folds cross validation, 
+
+		// Finding the best hyper parameters using 10-folds cross validation,
 		// for 2 different datasets ("glass" & "cancer")
 		findHyperParams(cancerData, glassData);
 	}
@@ -103,23 +104,20 @@ public class MainHW4 {
 				+ " p = %d, majority function = %s for glass data is: %f\n",
 				bestK, bestP, bestMajority, bestErr);
 		
+
 		bestK = 0;
 		bestP = 0;
 		bestMajority = null;
 		bestErr = Double.MAX_VALUE;
-		
+
 		for (int k = 1; k <= 20; k++) {
 			int tempK = k;
 			for (int p = 0; p < 4; p++) {
 				int tempP = p;
 				String[] majOpts = { "uniform", "weighted" };
 				for (String tempMajority : majOpts) {
-					double tempErr = crossValidationError(cancerInstances, 10, 
-													tempK, tempP, tempMajority,
-													EditMode.None);
-					if (tempErr == 0) {
-						System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-					}
+					double tempErr = crossValidationError(cancerInstances, 10, tempK, tempP, tempMajority,
+							EditMode.None);
 					if (bestErr > tempErr) {
 						bestK = tempK;
 						bestP = tempP;
@@ -129,12 +127,11 @@ public class MainHW4 {
 				}
 			}
 		}
-
 		String pAsString = (bestP == 0)? "infinity" : Integer.toString(bestP);
 		System.out.printf("Cross validation error with K = %d, p = %s,"
 				+ " majority function = %s, for cancer data is: %.5f\n",
 				bestK, pAsString, bestMajority, bestErr);
-		
+
 		Knn thisKnn = new Knn(bestK, bestP, bestMajority);
 		try {
 			thisKnn.buildClassifier(cancerInstances);
@@ -142,9 +139,45 @@ public class MainHW4 {
 			e.printStackTrace();
 		}
 		double[] confusion = thisKnn.calcConfusion(cancerInstances);
-		
+
 		System.out.printf("The average Precision for the cancer dataset is: %f \n"
-				+ "The average Recall for the cancer dataset is: %f\n",
-				confusion[0], confusion[1]);
+				+ "The average Recall for the cancer dataset is: %f\n", confusion[0], confusion[1]);
+	}
+
+	private static void secondPhase(Instances instances, int k, int p, String majority) {
+		int numOfInstances = instances.size();
+		int[] numOfFolds = {numOfInstances, 50, 10, 5, 3 };
+		
+		// for every possible number of folding, prints the relevant outputs
+		for (int i : numOfFolds) {
+			long startTime = System.nanoTime();
+			double crossValdErrNonEdited = crossValidationError(instances, i, k, p, majority, EditMode.None);
+			long totalElapseTimeNonEdited = System.nanoTime() - startTime;
+			long avgElapseTimeNonEdited = totalElapseTimeNonEdited / i;
+			int instancesInFold = numOfInstances / i;
+			int instancesInTrainingSet = instancesInFold * i * (i -1);
+			
+			startTime = System.nanoTime();
+			double crossValdErrForwards = crossValidationError(instances, i, k, p, majority, EditMode.Forwards);
+			long totalElapseTimeForwards = System.nanoTime() - startTime;
+			long avgElapseTimeForwards = totalElapseTimeForwards / i;
+			
+			startTime = System.nanoTime();
+			double crossValdErrBackwards = crossValidationError(instances, i, k, p, majority, EditMode.Backwards);
+			long totalElapseTimeBackwards = System.nanoTime() - startTime;
+			long avgElapseTimeBackwards = totalElapseTimeBackwards / i;
+
+//			System.out.printf("Cross validation error of None-Edited knn on glass dataset is %f <error> and the average elapsed time is %f <average_elapsed_time_in_nano_seconds> /n"
+//						+ "The total elapsed time is: %f <total_elapsed_time_in_nano_seconds> /n"
+//						+ "The total number of instances used in the classification phase is: %d <number of training instances> /n"
+//						+ "Cross validation error of Forwards-Edited knn on glass dataset is %f <error> and the average elapsed time is %f <average_elapsed_time_in_nano_seconds> /n "
+//						+ "The total elapsed time is: %f <total_elapsed_time_in_nano_seconds> /n"
+//						+ "The total number of instances used in the classification phase is: %d <number of training instances>/n"
+//						+ "Cross validation error of Backwards-Edited knn on glass dataset is %f <error> and the average elapsed time is %f <average_elapsed_time_in_nano_seconds>/n "
+//						+ "The total elapsed time is: %f <total_elapsed_time_in_nano_seconds>/n"
+//						+ "The total number of instances used in the classification phase is: %d <number of training instances>",
+//						crossValdErrNonEdited, avgElapseTimeNonEdited, totalElapseTimeNonEdited, instancesInTrainingSet,
+//						);
+		}
 	}
 }

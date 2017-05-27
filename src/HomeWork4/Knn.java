@@ -271,9 +271,13 @@ public class Knn implements Classifier {
 		}
 		double[] countClassifications = new double[m_trainingInstances.classAttribute().numValues()];
 		for (Neighbor inst : neighbors) {
-			double vote = 1.0 / Math.pow(inst.distance, 2);
-			System.out.println(vote);
-			countClassifications[(int) inst.instance.classValue()] += vote;
+			double distance = inst.distance;
+			if (distance != 0) {
+				double vote = 1.0 / Math.pow(distance, 2);
+				countClassifications[(int) inst.instance.classValue()] += vote;
+			} else {
+				return inst.instance.classValue();
+			}
 		}
 		int maxClass = 0;
 		for (int i = 1; i < countClassifications.length; i++) {
@@ -316,9 +320,11 @@ public class Knn implements Classifier {
 		double distance = 0;
 		int numAttributes = first.numAttributes() - 1;
 		for (int i = 0; i < numAttributes; i++) {
-			double tempCalc = Math.abs(first.value(i) - second.value(i));
-			tempCalc = Math.pow(tempCalc, m_p);
-			distance += tempCalc;
+			if (i != first.classIndex()) {
+				double tempCalc = Math.abs(first.value(i) - second.value(i));
+				tempCalc = Math.pow(tempCalc, m_p);
+				distance += tempCalc;
+			}
 		}
 		return Math.pow(distance, 1.0 / m_p);
 	}
@@ -336,8 +342,10 @@ public class Knn implements Classifier {
 		double distance = Double.MIN_VALUE;
 		int numAttributes = first.numAttributes() - 1;
 		for (int i = 0; i < numAttributes; i++) {
-			double tempCalc = Math.abs(first.value(i) - second.value(i));
-			distance = Math.max(distance, tempCalc);
+			if (i != first.classIndex()) {
+				double tempCalc = Math.abs(first.value(i) - second.value(i));
+				distance = Math.max(distance, tempCalc);
+			}
 		}
 		return distance;
 	}
