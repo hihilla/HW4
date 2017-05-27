@@ -83,7 +83,7 @@ public class Knn implements Classifier {
 	@Override
 	public double classifyInstance(Instance instance) {
 		// array list of the kNN of the given instance
-		ArrayList<Neighbor> kNN = new ArrayList<>(findNearestNeighbors(instance));
+		ArrayList<Neighbor> kNN = findNearestNeighbors(instance);
 		
 		if (m_majority == "uniform"){
 			return getClassVoteResult(kNN);
