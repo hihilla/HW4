@@ -176,7 +176,7 @@ public class Knn implements Classifier {
 	 * @return double array of size 2. First index for Precision and the second
 	 *         for Recall.
 	 */
-	private double[] calcConfusion(Instances instances) {
+	public double[] calcConfusion(Instances instances) {
 		double truePositive = 0; // prediction positive and condition positive 
 		double falsePositive = 0; // prediction positive and condition negative
 		double falseNegative = 0; // prediction negative and condition positive
