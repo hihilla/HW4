@@ -31,7 +31,13 @@ public class MainHW4 {
 	}
 
 	public static void main(String[] args) throws Exception {
-		// TODO: complete the Main method
+		// load data
+		Instances cancerData = loadData("/Users/hilla/Documents/B/ML/6/HW4/src/cancer.txt");
+		Instances glassData = loadData("/Users/hilla/Documents/B/ML/6/HW4/src/glass.txt");
+		
+		// Finding the best hyper parameters using 10-folds cross validation,
+		// for 2 different datasets ("glass" & "cancer")
+		findHyperParams(cancerData, glassData);
 	}
 
 	/**
@@ -40,7 +46,7 @@ public class MainHW4 {
 	 * @param instances
 	 * @return Average fold error (double)
 	 */
-	private double crossValidationError(Instances instances, int numFolds, int k, int p, String majority,
+	private static double crossValidationError(Instances instances, int numFolds, int k, int p, String majority,
 			EditMode editMode) {
 		int numInstancesInFold = (int) (instances.numInstances() / (double) numFolds);
 		double error = 0;
@@ -70,16 +76,16 @@ public class MainHW4 {
 		return error / (double) numFolds;
 	}
 
-	private void findHyperParams(Instances cancerInstances, Instances glassInstances) {
+	private static void findHyperParams(Instances cancerInstances, Instances glassInstances) {
 		int bestK = 0;
 		int bestP = 0;
 		String bestMajority = null;
 		double bestErr = Double.MAX_VALUE;
 
-		for (int i = 0; i < 20; i++) {
-			int tempK = i;
-			for (int j = 0; j < 4; j++) {
-				int tempP = j;
+		for (int k = 1; k <= 20; k++) {
+			int tempK = k;
+			for (int p = 0; p < 4; p++) {
+				int tempP = p;
 				String[] majOpts = { "uniform", "weighted" };
 				for (String tempMajority : majOpts) {
 					double tempErr = crossValidationError(glassInstances, 10, tempK, tempP, tempMajority,
@@ -88,12 +94,13 @@ public class MainHW4 {
 						bestK = tempK;
 						bestP = tempP;
 						bestMajority = tempMajority;
+						bestErr = tempErr;
 					}
 				}
 			}
 		}
 		System.out.printf("Cross validation error with K = %d,"
-				+ " p = %d, majority function = %s for glass data is: %f",
+				+ " p = %d, majority function = %s for glass data is: %f\n",
 				bestK, bestP, bestMajority, bestErr);
 		
 		bestK = 0;
@@ -101,10 +108,10 @@ public class MainHW4 {
 		bestMajority = null;
 		bestErr = Double.MAX_VALUE;
 		
-		for (int i = 0; i < 20; i++) {
-			int tempK = i;
-			for (int j = 0; j < 4; j++) {
-				int tempP = j;
+		for (int k = 1; k <= 20; k++) {
+			int tempK = k;
+			for (int p = 0; p < 4; p++) {
+				int tempP = p;
 				String[] majOpts = { "uniform", "weighted" };
 				for (String tempMajority : majOpts) {
 					double tempErr = crossValidationError(cancerInstances, 10, tempK, tempP, tempMajority,
@@ -113,12 +120,13 @@ public class MainHW4 {
 						bestK = tempK;
 						bestP = tempP;
 						bestMajority = tempMajority;
+						bestErr = tempErr;
 					}
 				}
 			}
 		}
 		System.out.printf("Cross validation error with K = %d, p = %d,"
-				+ " majority function = %s for cancer data is: %f",
+				+ " majority function = %s for cancer data is: %f\n",
 				bestK, bestP, bestMajority, bestErr);
 		
 		Knn thisKnn = new Knn(bestK, bestP, bestMajority);
@@ -129,8 +137,8 @@ public class MainHW4 {
 		}
 		double[] confusion = thisKnn.calcConfusion(cancerInstances);
 		
-		System.out.printf("The average Precision for the cancer dataset is: %f /n"
-				+ " The average Recall for the cancer dataset is: %f",
+		System.out.printf("The average Precision for the cancer dataset is: %f \n"
+				+ " The average Recall for the cancer dataset is: %f\n",
 				confusion[0], confusion[1]);
 	}
 }

@@ -213,8 +213,8 @@ public class Knn implements Classifier {
 
 		// array of all instances and their distance from the given instance
 		for (int i = 0; i < numOfTrainingInstances; i++) {
-			neighbors[i].instance = m_trainingInstances.get(i);
-			neighbors[i].distance = distance(neighbors[i].instance, instance);
+			neighbors[i] = new Neighbor(m_trainingInstances.get(i),
+										distance(m_trainingInstances.get(i), instance));
 		}
 		// convert the array of neighbors to an array list (in order to compare)
 		ArrayList<Neighbor> neighborsList = new ArrayList<Neighbor>(Arrays.asList(neighbors));
@@ -240,14 +240,17 @@ public class Knn implements Classifier {
 		if (neighbors.isEmpty()) {
 			return 0; // arbitrary return value for empty neighbors set
 		}
-		int[] countClassifications = new int[2];
+		int[] countClassifications = new int[m_trainingInstances.classAttribute().numValues()];
 		for (Neighbor inst : neighbors) {
 			countClassifications[(int) inst.instance.classValue()]++;
 		}
-		if (countClassifications[0] > countClassifications[1]) {
-			return 0;
+		int maxClass = 0;
+		for (int i = 1; i < countClassifications.length; i++) {
+			if (countClassifications[maxClass] < countClassifications[i]) {
+				maxClass = i;
+			}
 		}
-		return 1;
+		return maxClass;
 	}
 
 	/**
@@ -266,15 +269,18 @@ public class Knn implements Classifier {
 		if (neighbors.isEmpty()) {
 			return 0; // arbitrary return value for empty neighbors set
 		}
-		double[] countClassifications = new double[2];
+		double[] countClassifications = new double[m_trainingInstances.classAttribute().numValues()];
 		for (Neighbor inst : neighbors) {
 			double vote = 1.0 / Math.pow(inst.distance, 2);
 			countClassifications[(int) inst.instance.classValue()] += vote;
 		}
-		if (countClassifications[0] > countClassifications[1]) {
-			return 0;
+		int maxClass = 0;
+		for (int i = 1; i < countClassifications.length; i++) {
+			if (countClassifications[maxClass] < countClassifications[i]) {
+				maxClass = i;
+			}
 		}
-		return 1;
+		return maxClass;
 	}
 
 	/**
