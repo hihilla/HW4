@@ -47,6 +47,10 @@ public class Knn implements Classifier {
 		this.m_majority = majority;
 	}
 
+	public int getNumInstances() {
+		return m_trainingInstances.size();
+	}
+	
 	public EditMode getEditMode() {
 		return m_editMode;
 	}

@@ -6,9 +6,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Random;
 
+import com.oracle.webservices.internal.api.databinding.Databinding.Builder;
+
 import HomeWork4.Knn.EditMode;
 import weka.core.Instances;
-import weka.gui.visualize.InstanceInfo;
 
 public class MainHW4 {
 
@@ -38,7 +39,7 @@ public class MainHW4 {
 
 		// Finding the best hyper parameters using 10-folds cross validation,
 		// for 2 different datasets ("glass" & "cancer")
-		findHyperParams(cancerData, glassData);
+		findHyperParamsForData(cancerData, glassData);
 	}
 
 	/**
@@ -47,7 +48,8 @@ public class MainHW4 {
 	 * @param instances
 	 * @return Average fold error (double)
 	 */
-	private static double crossValidationError(Instances instances, int numFolds, int k, int p, String majority,
+	private static double crossValidationError(Instances instances, int numFolds, 
+			int k, int p, String majority,
 			EditMode editMode) {
 		int numInstancesInFold = (int) (instances.numInstances() / (double) numFolds);
 		double error = 0;
@@ -77,7 +79,125 @@ public class MainHW4 {
 		return error / (double) numFolds;
 	}
 
-	private static void findHyperParams(Instances cancerInstances, Instances glassInstances) {
+	private static void findHyperParamsForData(Instances cancerInstances, 
+												Instances glassInstances) {
+		HyperParameters glassParams = findHyperParams(glassInstances, 
+														10, 
+														EditMode.None);
+		System.out.printf(
+				"Cross validation error with K = %d, p = %d, "
+				+ "majority function = %s for glass data is: %f\n",
+				glassParams.k, glassParams.p, glassParams.majority, 
+				glassParams.error);
+
+		HyperParameters cancerParams = findHyperParams(cancerInstances, 
+														10, 
+														EditMode.None);
+		System.out.printf(
+				"Cross validation error with K = %d, p = %s, "
+				+ "majority function = %s, for cancer data is: %.5f\n",
+				cancerParams.k, cancerParams.p, cancerParams.majority, 
+				cancerParams.error);
+
+		Knn thisKnn = new Knn(cancerParams.k, 
+								cancerParams.p, 
+								cancerParams.majority);
+		try {
+			thisKnn.buildClassifier(cancerInstances);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		double[] confusion = thisKnn.calcConfusion(cancerInstances);
+
+		System.out.printf("The average Precision for the cancer dataset is: %f \n"
+				+ "The average Recall for the cancer dataset is: %f\n", confusion[0], confusion[1]);
+		
+		int[] numOfFolds = {glassInstances.numInstances(), 50, 10, 5, 3 };
+		// for every possible number of folding, prints the relevant outputs
+		for (int fold : numOfFolds) {
+			System.out.println("----------------------------");
+			System.out.printf("Results for %d folds:\n", fold);
+			System.out.println("----------------------------");
+			printGlassResult(glassInstances, glassParams, fold, EditMode.None);
+			printGlassResult(glassInstances, glassParams, fold, EditMode.Forwards);
+			printGlassResult(glassInstances, glassParams, fold, EditMode.Backwards);
+		}
+	}
+
+	/**
+	 * @param glassInstances
+	 * @param glassParams
+	 * @param fold
+	 */
+	private static void printGlassResult(Instances glassInstances, 
+			HyperParameters glassParams, int fold, EditMode eMode) {
+		long startTime = System.nanoTime();
+		// calculating cross validation error
+		double crossValError = crossValidationError(glassInstances, fold, 
+				glassParams.k, glassParams.p, glassParams.majority, 
+				eMode);
+		// calculating total and average elapsed time
+		long totalTime = System.nanoTime() - startTime;
+		long avgTime = totalTime / fold;
+		Knn knn = new Knn(glassParams.k, glassParams.p, glassParams.majority);
+		knn.setEditMode(eMode);
+		try {
+			knn.buildClassifier(glassInstances);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// calculate number of instances in training set of each fold
+		int numInstancesInFold = (int) (knn.getNumInstances() / (double) fold) * (fold - 1);
+		System.out.printf("Cross validation error of %s-Edited knn on glass dataset is ", eMode);
+		System.out.println(crossValError);
+		System.out.print("and the average elapsed time is ");
+		System.out.println(avgTime);
+		System.out.print("The total elapsed time is: ");
+		System.out.println(totalTime);
+		System.out.print("The total number of instances used in the classification phase is: ");
+		System.out.println(numInstancesInFold);
+	}
+
+	/*
+  int
+	 * instancesInFoldNonEdited = instances.size() / i; int
+	 * instancesInTrainingSetNonEdited = instancesInFoldNonEdited * i * (i -1);
+	 * 
+	 * startTime = System.nanoTime(); double crossValdErrForwards =
+	 * crossValidationError(instances, i, k, p, majority, EditMode.Forwards);
+	 * long totalElapseTimeForwards = System.nanoTime() - startTime; long
+	 * avgElapseTimeForwards = totalElapseTimeForwards / i; int
+	 * instancesInFoldForwards = XXX / i; int instancesInTrainingSetForwards =
+	 * instancesInFoldForwards * i * (i -1);
+	 * 
+	 * 
+	 * startTime = System.nanoTime(); double crossValdErrBackwards =
+	 * crossValidationError(instances, i, k, p, majority, EditMode.Backwards);
+	 * long totalElapseTimeBackwards = System.nanoTime() - startTime; long
+	 * avgElapseTimeBackwards = totalElapseTimeBackwards / i; int
+	 * instancesInFoldBackwards = XXX / i; int instancesInTrainingSetBackwards =
+	 * instancesInFoldForwards * i * (i -1);
+	 * 
+	 * System.out.
+	 * printf("Cross validation error of None-Edited knn on glass dataset is %f and the average elapsed time is %f /n"
+	 * + "The total elapsed time is: %f /n" +
+	 * "The total number of instances used in the classification phase is: %d /n"
+	 * +
+	 * "Cross validation error of Forwards-Edited knn on glass dataset is %f and the average elapsed time is %f /n "
+	 * + "The total elapsed time is: %f /n" +
+	 * "The total number of instances used in the classification phase is: %d <number of training instances>/n"
+	 * +
+	 * "Cross validation error of Backwards-Edited knn on glass dataset is %f <error> and the average elapsed time is %f <average_elapsed_time_in_nano_seconds>/n "
+	 * + "The total elapsed time is: %f <total_elapsed_time_in_nano_seconds>/n"
+	 * +
+	 * "The total number of instances used in the classification phase is: %d <number of training instances>"
+	 * , crossValdErrNonEdited, avgElapseTimeNonEdited,
+	 * totalElapseTimeNonEdited, instancesInTrainingSetNonEdited,
+	 * crossValdErrForwards, avgElapseTimeForwards, totalElapseTimeForwards, );
+	 * } }
+	 */
+	public static HyperParameters findHyperParams(Instances data, int numFolds, EditMode eMode) {
 		int bestK = 0;
 		int bestP = 0;
 		String bestMajority = null;
@@ -89,8 +209,7 @@ public class MainHW4 {
 				int tempP = p;
 				String[] majOpts = { "uniform", "weighted" };
 				for (String tempMajority : majOpts) {
-					double tempErr = crossValidationError(glassInstances, 10, tempK, tempP, tempMajority,
-							EditMode.None);
+					double tempErr = crossValidationError(data, numFolds, tempK, tempP, tempMajority, eMode);
 					if (bestErr > tempErr) {
 						bestK = tempK;
 						bestP = tempP;
@@ -100,93 +219,24 @@ public class MainHW4 {
 				}
 			}
 		}
-		System.out.printf("Cross validation error with K = %d,"
-				+ " p = %d, majority function = %s for glass data is: %f\n",
-				bestK, bestP, bestMajority, bestErr);
-		
-
-		bestK = 0;
-		bestP = 0;
-		bestMajority = null;
-		bestErr = Double.MAX_VALUE;
-
-		for (int k = 1; k <= 20; k++) {
-			int tempK = k;
-			for (int p = 0; p < 4; p++) {
-				int tempP = p;
-				String[] majOpts = { "uniform", "weighted" };
-				for (String tempMajority : majOpts) {
-					double tempErr = crossValidationError(cancerInstances, 10, tempK, tempP, tempMajority,
-							EditMode.None);
-					if (bestErr > tempErr) {
-						bestK = tempK;
-						bestP = tempP;
-						bestMajority = tempMajority;
-						bestErr = tempErr;
-					}
-				}
-			}
-		}
-		String pAsString = (bestP == 0)? "infinity" : Integer.toString(bestP);
-		System.out.printf("Cross validation error with K = %d, p = %s,"
-				+ " majority function = %s, for cancer data is: %.5f\n",
-				bestK, pAsString, bestMajority, bestErr);
-
-		Knn thisKnn = new Knn(bestK, bestP, bestMajority);
-		try {
-			thisKnn.buildClassifier(cancerInstances);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		double[] confusion = thisKnn.calcConfusion(cancerInstances);
-
-		System.out.printf("The average Precision for the cancer dataset is: %f \n"
-				+ "The average Recall for the cancer dataset is: %f\n", confusion[0], confusion[1]);
+		return new HyperParameters(bestK, bestP, bestMajority, eMode, bestErr);
 	}
 
-	/*private static void secondPhase(Instances instances, int k, int p, String majority) {
-		int numOfInstances = instances.size();
-		int[] numOfFolds = {numOfInstances, 50, 10, 5, 3 };
-		
-		// for every possible number of folding, prints the relevant outputs
-		for (int i : numOfFolds) {
-			System.out.printf("----------------------------/n"
-								+ "Results for %d folds:/n"
-								+ "----------------------------/n", i);
-			long startTime = System.nanoTime();
-			double crossValdErrNonEdited = crossValidationError(instances, i, k, p, majority, EditMode.None);
-			long totalElapseTimeNonEdited = System.nanoTime() - startTime;
-			long avgElapseTimeNonEdited = totalElapseTimeNonEdited / i;
-			int instancesInFoldNonEdited = instances.size() / i;
-			int instancesInTrainingSetNonEdited = instancesInFoldNonEdited * i * (i -1);
-			
-			startTime = System.nanoTime();
-			double crossValdErrForwards = crossValidationError(instances, i, k, p, majority, EditMode.Forwards);
-			long totalElapseTimeForwards = System.nanoTime() - startTime;
-			long avgElapseTimeForwards = totalElapseTimeForwards / i;
-			int instancesInFoldForwards =  XXX / i;
-			int instancesInTrainingSetForwards = instancesInFoldForwards * i * (i -1);
+	public static class HyperParameters {
+		int k;
+		int p;
+		String majority;
+		EditMode editMode;
+		double error;
+		int numInstances = 0;
 
-			
-			startTime = System.nanoTime();
-			double crossValdErrBackwards = crossValidationError(instances, i, k, p, majority, EditMode.Backwards);
-			long totalElapseTimeBackwards = System.nanoTime() - startTime;
-			long avgElapseTimeBackwards = totalElapseTimeBackwards / i;
-			int instancesInFoldBackwards = XXX / i;
-			int instancesInTrainingSetBackwards = instancesInFoldForwards * i * (i -1);
-
-			System.out.printf("Cross validation error of None-Edited knn on glass dataset is %f and the average elapsed time is %f /n"
-						+ "The total elapsed time is: %f /n"
-						+ "The total number of instances used in the classification phase is: %d /n"
-						+ "Cross validation error of Forwards-Edited knn on glass dataset is %f and the average elapsed time is %f /n "
-						+ "The total elapsed time is: %f /n"
-						+ "The total number of instances used in the classification phase is: %d <number of training instances>/n"
-						+ "Cross validation error of Backwards-Edited knn on glass dataset is %f <error> and the average elapsed time is %f <average_elapsed_time_in_nano_seconds>/n "
-						+ "The total elapsed time is: %f <total_elapsed_time_in_nano_seconds>/n"
-						+ "The total number of instances used in the classification phase is: %d <number of training instances>",
-						crossValdErrNonEdited, avgElapseTimeNonEdited, totalElapseTimeNonEdited, instancesInTrainingSetNonEdited,
-						crossValdErrForwards, avgElapseTimeForwards, totalElapseTimeForwards,
-						);
+		public HyperParameters(int k, int p, String majority, EditMode editMode, double error) {
+			super();
+			this.k = k;
+			this.p = p;
+			this.majority = majority;
+			this.editMode = editMode;
+			this.error = error;
 		}
-	}*/
+	}
 }
