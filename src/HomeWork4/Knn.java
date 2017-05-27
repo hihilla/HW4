@@ -119,6 +119,10 @@ public class Knn implements Classifier {
 		}
 		m_trainingInstances = new Instances(data);
 	}
+	
+	public int sizeOfTrainingInstances(){
+		return m_trainingInstances.size();
+	}
 
 	/**
 	 * Store the training set in the m_trainingInstances without editing.
