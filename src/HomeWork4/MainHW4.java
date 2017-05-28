@@ -159,7 +159,8 @@ public class MainHW4 {
 		}
 		// calculate number of instances in training set of each fold
 		int numInstancesInFold = (int) (knn.getNumInstances() / (double) fold) * (fold - 1);
-		System.out.printf("Cross validation error of %s-Edited knn on glass dataset is %.7f\n", eMode, crossValError);
+		System.out.printf("Cross validation error of %s-Edited knn on glass dataset is %.7f\n", 
+							eMode, crossValError);
 		System.out.print("and the average elapsed time is ");
 		System.out.println(avgTime);
 		System.out.print("The total elapsed time is: ");

@@ -326,7 +326,7 @@ public class Knn implements Classifier {
 	 */
 	private double lpDistance(Instance first, Instance second) {
 		double distance = 0;
-		int numAttributes = first.numAttributes() - 1;
+		int numAttributes = first.numAttributes();
 		for (int i = 0; i < numAttributes; i++) {
 			if (i != first.classIndex()) {
 				double tempCalc = Math.abs(first.value(i) - second.value(i));
@@ -347,8 +347,8 @@ public class Knn implements Classifier {
 	 * @return the l-infinity distance between two instances
 	 */
 	private double lInfinityDistance(Instance first, Instance second) {
-		double distance = Double.MIN_VALUE;
-		int numAttributes = first.numAttributes() - 1;
+		double distance = -1;
+		int numAttributes = first.numAttributes();
 		for (int i = 0; i < numAttributes; i++) {
 			if (i != first.classIndex()) {
 				double tempCalc = Math.abs(first.value(i) - second.value(i));
