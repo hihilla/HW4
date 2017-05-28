@@ -48,13 +48,10 @@ public class MainHW4 {
 	 * @param instances
 	 * @return Average fold error (double)
 	 */
-	private static double crossValidationError(Instances instances, int numFolds, 
-			int k, int p, String majority,
+	private static double crossValidationError(Instances instances, int numFolds, int k, int p, String majority,
 			EditMode editMode) {
 		int numInstancesInFold = (int) (instances.numInstances() / (double) numFolds);
 		double error = 0;
-		// shuffling instances
-		instances.randomize(new Random());
 
 		// generating numFolds knn trees, calculating their error
 		// and calculating the average error
@@ -72,7 +69,7 @@ public class MainHW4 {
 					testData.add(instances.instance(j));
 				}
 			}
-			
+
 			Knn thisKnn = new Knn(k, p, majority);
 			thisKnn.setEditMode(editMode);
 			try {
@@ -89,29 +86,18 @@ public class MainHW4 {
 		return error / (double) numFolds;
 	}
 
-	private static void findHyperParamsForData(Instances cancerInstances, 
-												Instances glassInstances) {
-		HyperParameters glassParams = findHyperParams(glassInstances, 
-														10, 
-														EditMode.None);
+	private static void findHyperParamsForData(Instances cancerInstances, Instances glassInstances) {
+		HyperParameters glassParams = findHyperParams(glassInstances, 10, EditMode.None);
 		System.out.printf(
-				"Cross validation error with K = %d, p = %d, "
-				+ "majority function = %s for glass data is: %.7f\n",
-				glassParams.k, glassParams.p, glassParams.majority, 
-				glassParams.error);
+				"Cross validation error with K = %d, p = %d, " + "majority function = %s, for glass data is: %.7f\n",
+				glassParams.k, glassParams.p, glassParams.majority, glassParams.error);
 
-		HyperParameters cancerParams = findHyperParams(cancerInstances, 
-														10, 
-														EditMode.None);
+		HyperParameters cancerParams = findHyperParams(cancerInstances, 10, EditMode.None);
 		System.out.printf(
-				"Cross validation error with K = %d, p = %s, "
-				+ "majority function = %s, for cancer data is: %.7f\n",
-				cancerParams.k, cancerParams.p, cancerParams.majority, 
-				cancerParams.error);
+				"Cross validation error with K = %d, p = %s, " + "majority function = %s, for cancer data is: %.7f\n",
+				cancerParams.k, cancerParams.p, cancerParams.majority, cancerParams.error);
 
-		Knn thisKnn = new Knn(cancerParams.k, 
-								cancerParams.p, 
-								cancerParams.majority);
+		Knn thisKnn = new Knn(cancerParams.k, cancerParams.p, cancerParams.majority);
 		try {
 			thisKnn.buildClassifier(cancerInstances);
 		} catch (Exception e) {
@@ -121,17 +107,19 @@ public class MainHW4 {
 
 		System.out.printf("The average Precision for the cancer dataset is: %.7f \n"
 				+ "The average Recall for the cancer dataset is: %.7f\n", confusion[0], confusion[1]);
-		
-		int[] numOfFolds = {glassInstances.numInstances(), 50, 10, 5, 3 };
-		// for every possible number of folding, prints the relevant outputs
-		for (int fold : numOfFolds) {
-			System.out.println("----------------------------");
-			System.out.printf("Results for %d folds:\n", fold);
-			System.out.println("----------------------------");
-			printGlassResult(glassInstances, glassParams, fold, EditMode.None);
-			printGlassResult(glassInstances, glassParams, fold, EditMode.Forwards);
-			printGlassResult(glassInstances, glassParams, fold, EditMode.Backwards);
-		}
+
+		int[] numOfFolds = { glassInstances.numInstances(), 50, 10, 5, 3 };
+//		 for every possible number of folding, prints the relevant outputs
+		 for (int fold : numOfFolds) {
+		 System.out.println("----------------------------");
+		 System.out.printf("Results for %d folds:\n", fold);
+		 System.out.println("----------------------------");
+		 printGlassResult(glassInstances, glassParams, fold, EditMode.None);
+		 printGlassResult(glassInstances, glassParams, fold,
+		 EditMode.Forwards);
+		 printGlassResult(glassInstances, glassParams, fold,
+		 EditMode.Backwards);
+		 }
 	}
 
 	/**
@@ -139,16 +127,17 @@ public class MainHW4 {
 	 * @param glassParams
 	 * @param fold
 	 */
-	private static void printGlassResult(Instances glassInstances, 
-			HyperParameters glassParams, int fold, EditMode eMode) {
+	private static void printGlassResult(Instances glassInstances, HyperParameters glassParams, int fold,
+			EditMode eMode) {
 		long startTime = System.nanoTime();
 		// calculating cross validation error
-		double crossValError = crossValidationError(glassInstances, fold, 
-				glassParams.k, glassParams.p, glassParams.majority, 
-				eMode);
+		// shuffling instances
+		glassInstances.randomize(new Random());
+		double crossValError = crossValidationError(glassInstances, fold, glassParams.k, glassParams.p,
+				glassParams.majority, eMode);
 		// calculating total and average elapsed time
 		long totalTime = System.nanoTime() - startTime;
-		long avgTime = totalTime / fold;
+		double avgTime = totalTime / (double) fold;
 		Knn knn = new Knn(glassParams.k, glassParams.p, glassParams.majority);
 		knn.setEditMode(eMode);
 		try {
@@ -159,10 +148,8 @@ public class MainHW4 {
 		}
 		// calculate number of instances in training set of each fold
 		int numInstancesInFold = (int) (knn.getNumInstances() / (double) fold) * (fold - 1);
-		System.out.printf("Cross validation error of %s-Edited knn on glass dataset is %.7f\n", 
-							eMode, crossValError);
-		System.out.print("and the average elapsed time is ");
-		System.out.println(avgTime);
+		System.out.printf("Cross validation error of %s-Edited knn on glass dataset is %.5f\n", eMode, crossValError);
+		System.out.printf("and the average elapsed time is %.5f\n", avgTime);
 		System.out.print("The total elapsed time is: ");
 		System.out.println(totalTime);
 		System.out.print("The total number of instances used in the classification phase is: ");
@@ -174,6 +161,8 @@ public class MainHW4 {
 		int bestP = 0;
 		String bestMajority = null;
 		double bestErr = Double.MAX_VALUE;
+		// shuffling instances
+		data.randomize(new Random());
 
 		for (int k = 1; k <= 20; k++) {
 			int tempK = k;

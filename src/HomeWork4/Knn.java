@@ -277,7 +277,8 @@ public class Knn implements Classifier {
 		if (neighbors.isEmpty()) {
 			return 0; // arbitrary return value for empty neighbors set
 		}
-		double[] countClassifications = new double[m_trainingInstances.classAttribute().numValues()];
+		int numAttributes = m_trainingInstances.classAttribute().numValues();
+		double[] countClassifications = new double[numAttributes];
 		for (Neighbor inst : neighbors) {
 			double distance = inst.distance;
 			if (distance != 0) {
