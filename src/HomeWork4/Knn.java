@@ -330,6 +330,10 @@ public class Knn implements Classifier {
 		int numAttributes = first.numAttributes();
 		for (int i = 0; i < numAttributes; i++) {
 			if (i != first.classIndex()) {
+				if (first.attribute(i).name().equals("id")) {
+//					System.out.println(first.attribute(i).name().equals("id"));
+					continue;
+				}
 				double tempCalc = Math.abs(first.value(i) - second.value(i));
 				tempCalc = Math.pow(tempCalc, m_p);
 				distance += tempCalc;
@@ -352,6 +356,10 @@ public class Knn implements Classifier {
 		int numAttributes = first.numAttributes();
 		for (int i = 0; i < numAttributes; i++) {
 			if (i != first.classIndex()) {
+				if (first.attribute(i).name().equals("id")) {
+//					System.out.println(first.attribute(i).name().equals("id"));
+					continue;
+				}
 				double tempCalc = Math.abs(first.value(i) - second.value(i));
 				distance = Math.max(distance, tempCalc);
 			}
