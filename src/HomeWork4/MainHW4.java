@@ -6,8 +6,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Random;
 
-import com.oracle.webservices.internal.api.databinding.Databinding.Builder;
-
 import HomeWork4.Knn.EditMode;
 import weka.core.Instances;
 
@@ -48,10 +46,11 @@ public class MainHW4 {
 	 * @param instances
 	 * @return Average fold error (double)
 	 */
-	private static double crossValidationError(Instances instances, int numFolds, int k, int p, String majority,
-			EditMode editMode) {
+	private static double crossValidationError(Instances instances, int numFolds, 
+			HyperParameters params) {
 		int numInstancesInFold = (int) (instances.numInstances() / (double) numFolds);
 		double error = 0;
+		long totalTime = 0;
 
 		// generating numFolds knn trees, calculating their error
 		// and calculating the average error
@@ -59,43 +58,47 @@ public class MainHW4 {
 			Instances testData = new Instances(instances, instances.numInstances());
 			Instances trainData = new Instances(instances, instances.numInstances());
 			for (int j = 0; j < instances.numInstances(); j++) {
-				int startIndex = i * numInstancesInFold;
-				int endIndex = startIndex + numInstancesInFold;
-				if ((j < startIndex) || (j > endIndex)) {
-					// index in test range - insert to test data
-					trainData.add(instances.instance(j));
-				} else {
-					// index not in test range - insert to train data
+				if (j % numFolds == i) {
 					testData.add(instances.instance(j));
+				} else {
+					trainData.add(instances.instance(j));
 				}
 			}
 
-			Knn thisKnn = new Knn(k, p, majority);
-			thisKnn.setEditMode(editMode);
+			Knn thisKnn = new Knn(params.k, params.p, params.majority);
+			thisKnn.setEditMode(params.editMode);
 			try {
 				thisKnn.buildClassifier(trainData);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
+			params.numInstances += thisKnn.getNumInstances();
+			
+			// measuring time for this fold
+			long startTime = System.nanoTime();
 			// adding this testing data's error to the accumulator
 			error += thisKnn.calcAvgError(testData);
+			// adding this folds time to total time
+			long endTime = System.nanoTime() - startTime;
+			totalTime += endTime;
 		}
-
+		params.totalTime = totalTime;
 		return error / (double) numFolds;
 	}
 
 	private static void findHyperParamsForData(Instances cancerInstances, Instances glassInstances) {
 		HyperParameters glassParams = findHyperParams(glassInstances, 10, EditMode.None);
-		System.out.printf(
-				"Cross validation error with K = %d, p = %d, " + "majority function = %s, for glass data is: %.7f\n",
-				glassParams.k, glassParams.p, glassParams.majority, glassParams.error);
+		System.out.printf("Cross validation error with K = %d, p = %d, " 
+						+ "majority function = %s, for glass data is: %.7f\n",
+						glassParams.k, glassParams.p, glassParams.majority, 
+						glassParams.crossValidationError);
 
 		HyperParameters cancerParams = findHyperParams(cancerInstances, 10, EditMode.None);
-		System.out.printf(
-				"Cross validation error with K = %d, p = %s, " + "majority function = %s, for cancer data is: %.7f\n",
-				cancerParams.k, cancerParams.p, cancerParams.majority, cancerParams.error);
+		System.out.printf("Cross validation error with K = %d, p = %s, " 
+							+ "majority function = %s, for cancer data is: %.7f\n",
+							cancerParams.k, cancerParams.p, cancerParams.majority, 
+							cancerParams.crossValidationError);
 
 		Knn thisKnn = new Knn(cancerParams.k, cancerParams.p, cancerParams.majority);
 		try {
@@ -108,7 +111,7 @@ public class MainHW4 {
 		System.out.printf("The average Precision for the cancer dataset is: %.7f \n"
 				+ "The average Recall for the cancer dataset is: %.7f\n", confusion[0], confusion[1]);
 
-		int[] numOfFolds = { glassInstances.numInstances(), 50, 10, 5, 3 };
+		int[] numOfFolds = { 3, 5, 10, 50, glassInstances.numInstances()};
 //		 for every possible number of folding, prints the relevant outputs
 		 for (int fold : numOfFolds) {
 		 System.out.println("----------------------------");
@@ -125,21 +128,20 @@ public class MainHW4 {
 	/**
 	 * @param glassInstances
 	 * @param glassParams
-	 * @param fold
+	 * @param folds
 	 */
-	private static void printGlassResult(Instances glassInstances, HyperParameters glassParams, int fold,
+	private static void printGlassResult(Instances glassInstances, HyperParameters glassParams, int folds,
 			EditMode eMode) {
-		long startTime = System.nanoTime();
-		// calculating cross validation error
 		// shuffling instances
 		glassInstances.randomize(new Random());
-		double crossValError = crossValidationError(glassInstances, fold, glassParams.k, glassParams.p,
-				glassParams.majority, eMode);
-		// calculating total and average elapsed time
-		long totalTime = System.nanoTime() - startTime;
-		double avgTime = totalTime / (double) fold;
-		Knn knn = new Knn(glassParams.k, glassParams.p, glassParams.majority);
-		knn.setEditMode(eMode);
+		HyperParameters params = new HyperParameters(glassParams.k, glassParams.p, glassParams.majority, eMode, 0);
+		// calculating cross validation error
+		double crossValError = crossValidationError(glassInstances, folds, params);
+		params.crossValidationError = crossValError;
+		long totalTime = params.totalTime;
+		double avgTime = totalTime / (double) folds;
+		Knn knn = new Knn(params.k, params.p, params.majority);
+		knn.setEditMode(params.editMode);
 		try {
 			knn.buildClassifier(glassInstances);
 		} catch (Exception e) {
@@ -147,8 +149,9 @@ public class MainHW4 {
 			e.printStackTrace();
 		}
 		// calculate number of instances in training set of each fold
-		int numInstancesInFold = (int) (knn.getNumInstances() / (double) fold) * (fold - 1);
-		System.out.printf("Cross validation error of %s-Edited knn on glass dataset is %.5f\n", eMode, crossValError);
+		int numInstancesInFold = params.numInstances;
+		System.out.printf("Cross validation error of %s-Edited knn on glass dataset is %.5f\n", 
+				eMode, crossValError);
 		System.out.printf("and the average elapsed time is %.5f\n", avgTime);
 		System.out.print("The total elapsed time is: ");
 		System.out.println(totalTime);
@@ -170,7 +173,8 @@ public class MainHW4 {
 				int tempP = p;
 				String[] majOpts = { "uniform", "weighted" };
 				for (String tempMajority : majOpts) {
-					double tempErr = crossValidationError(data, numFolds, tempK, tempP, tempMajority, eMode);
+					HyperParameters params = new HyperParameters(tempK, tempP, tempMajority, eMode, 0);
+					double tempErr = crossValidationError(data, numFolds, params);
 					if (bestErr > tempErr) {
 						bestK = tempK;
 						bestP = tempP;
@@ -188,8 +192,9 @@ public class MainHW4 {
 		int p;
 		String majority;
 		EditMode editMode;
-		double error;
+		double crossValidationError;
 		int numInstances = 0;
+		long totalTime = 0;
 
 		public HyperParameters(int k, int p, String majority, EditMode editMode, double error) {
 			super();
@@ -197,7 +202,7 @@ public class MainHW4 {
 			this.p = p;
 			this.majority = majority;
 			this.editMode = editMode;
-			this.error = error;
+			this.crossValidationError = error;
 		}
 	}
 }

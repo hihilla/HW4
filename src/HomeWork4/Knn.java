@@ -97,35 +97,37 @@ public class Knn implements Classifier {
 	}
 
 	private void editedForward(Instances instances) {
-		Instances data = new Instances(instances);
-		for (Instance x : instances) {
-			data.remove(x);
-			m_trainingInstances = data;
-			if (classifyInstance(x) != x.classValue()) {
-				// if x is classify correctly by instances = {x},
-				// remove x from instances. else - return x to instances!
-				data.add(x);
-			}
-		}
-		m_trainingInstances = data;
-	}
-
-	private void editedBackward(Instances instances) {
-		m_trainingInstances = new Instances(instances);
-		Instances data = new Instances(instances);
+		Instances data = new Instances(instances, instances.numInstances());
 		data.delete();
 		for (Instance x : instances) {
-			if (classifyInstance(x) == x.classValue()) {
-				// if x is NOT classify correctly by instances = {x},
-				// add x to instances. else - remove x from instances!
+			m_trainingInstances = data;
+			if (classifyInstance(x) != x.classValue()) {
+				// if x is NOT classify correctly by data,
+				// add x to data.
 				data.add(x);
 			}
 		}
 		m_trainingInstances = new Instances(data);
 	}
+
+	private void editedBackward(Instances instances) {
+		Instances data = new Instances(instances);
 	
-	public int sizeOfTrainingInstances(){
-		return m_trainingInstances.size();
+		for (int i = data.numInstances() - 1; i > 0; i--) {
+			Instance x = data.instance(i);
+			data.delete(i);
+			m_trainingInstances = new Instances(data);
+			
+			if (classifyInstance(x) != x.classValue()) {
+				// if x is classify correctly by data - {x},
+				// remove x from data. else - return x to data.
+				data.add(x);
+			}
+		}
+//		System.out.println(instances.numInstances() - count);
+		m_trainingInstances = new Instances(data);
+//		System.out.println(m_trainingInstances.numInstances());
+//		System.out.println("^^^^^^^^^^^^^^^^^^^^");
 	}
 
 	/**
@@ -203,6 +205,9 @@ public class Knn implements Classifier {
 		}
 		
 		// calculate precision and recall
+		System.out.println(truePositive);
+		System.out.println(falsePositive);
+		System.out.println(falseNegative);
 		double precision = truePositive / (truePositive + falsePositive);
 		double recall = truePositive / (truePositive + falseNegative);
 		double[] ret = {precision, recall};
@@ -217,6 +222,9 @@ public class Knn implements Classifier {
 	 */
 	private ArrayList<Neighbor> findNearestNeighbors(Instance instance) {
 		int numOfTrainingInstances = m_trainingInstances.size();
+		if (numOfTrainingInstances == 0) {
+			return new ArrayList<Neighbor>();
+		}
 		Neighbor[] neighbors = new Neighbor[numOfTrainingInstances];
 
 		// array of all instances and their distance from the given instance
@@ -232,7 +240,8 @@ public class Knn implements Classifier {
 
 		// takes only the first (smallest) k neighbors and puts in a new array
 		// list
-		ArrayList<Neighbor> kNN = new ArrayList<>(neighborsList.subList(0, m_k - 1));
+		int endIndex = (m_k < numOfTrainingInstances)? m_k - 1 : numOfTrainingInstances - 1;
+		ArrayList<Neighbor> kNN = new ArrayList<>(neighborsList.subList(0, endIndex));
 
 		return kNN;
 	}
@@ -331,7 +340,6 @@ public class Knn implements Classifier {
 		for (int i = 0; i < numAttributes; i++) {
 			if (i != first.classIndex()) {
 				if (first.attribute(i).name().equals("id")) {
-//					System.out.println(first.attribute(i).name().equals("id"));
 					continue;
 				}
 				double tempCalc = Math.abs(first.value(i) - second.value(i));
@@ -357,7 +365,6 @@ public class Knn implements Classifier {
 		for (int i = 0; i < numAttributes; i++) {
 			if (i != first.classIndex()) {
 				if (first.attribute(i).name().equals("id")) {
-//					System.out.println(first.attribute(i).name().equals("id"));
 					continue;
 				}
 				double tempCalc = Math.abs(first.value(i) - second.value(i));
