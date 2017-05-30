@@ -48,7 +48,6 @@ public class MainHW4 {
 	 */
 	private static double crossValidationError(Instances instances, int numFolds, 
 			HyperParameters params) {
-		int numInstancesInFold = (int) (instances.numInstances() / (double) numFolds);
 		double error = 0;
 		long totalTime = 0;
 
@@ -70,7 +69,6 @@ public class MainHW4 {
 			try {
 				thisKnn.buildClassifier(trainData);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			params.numInstances += thisKnn.getNumInstances();
@@ -145,10 +143,9 @@ public class MainHW4 {
 		try {
 			knn.buildClassifier(glassInstances);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		// calculate number of instances in training set of each fold
+		// calculate number of instances in training set 
 		int numInstancesInFold = params.numInstances;
 		System.out.printf("Cross validation error of %s-Edited knn on glass dataset is %.5f\n", 
 				eMode, crossValError);

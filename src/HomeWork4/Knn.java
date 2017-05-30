@@ -124,10 +124,7 @@ public class Knn implements Classifier {
 				data.add(x);
 			}
 		}
-//		System.out.println(instances.numInstances() - count);
 		m_trainingInstances = new Instances(data);
-//		System.out.println(m_trainingInstances.numInstances());
-//		System.out.println("^^^^^^^^^^^^^^^^^^^^");
 	}
 
 	/**
@@ -141,13 +138,11 @@ public class Knn implements Classifier {
 
 	@Override
 	public double[] distributionForInstance(Instance arg0) throws Exception {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Capabilities getCapabilities() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -164,7 +159,7 @@ public class Knn implements Classifier {
 		int numOfMistakes = 0;
 		Instance instance;
 
-		// goes through each instances and check the rediction is
+		// goes through each instances and check the prediction is
 		// it's actual classification, otherwise counts to mistakes
 		for (int i = 0; i < numOfInstances; i++) {
 			instance = instances.instance(i);
@@ -205,9 +200,6 @@ public class Knn implements Classifier {
 		}
 		
 		// calculate precision and recall
-		System.out.println(truePositive);
-		System.out.println(falsePositive);
-		System.out.println(falseNegative);
 		double precision = truePositive / (truePositive + falsePositive);
 		double recall = truePositive / (truePositive + falseNegative);
 		double[] ret = {precision, recall};
