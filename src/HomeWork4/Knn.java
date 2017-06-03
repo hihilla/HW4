@@ -282,12 +282,8 @@ public class Knn implements Classifier {
 		double[] countClassifications = new double[numAttributes];
 		for (Neighbor inst : neighbors) {
 			double distance = inst.distance;
-			if (distance != 0) {
-				double vote = 1.0 / Math.pow(distance, 2);
-				countClassifications[(int) inst.instance.classValue()] += vote;
-			} else {
-				return inst.instance.classValue();
-			}
+			double vote = 1.0 / Math.pow(distance, 2);
+			countClassifications[(int) inst.instance.classValue()] += vote;
 		}
 		int maxClass = 0;
 		for (int i = 1; i < countClassifications.length; i++) {

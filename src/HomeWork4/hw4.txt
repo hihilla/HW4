@@ -1,90 +1,89 @@
-Cross validation error with K = 2, p = 3, majority function = uniform, for glass data is: 0.2623377
-Cross validation error with K = 13, p = 1, majority function = weighted, for cancer data is: 0.2493842
-The average Precision for the cancer dataset is: 0.9534884 
-The average Recall for the cancer dataset is: 0.9647059
+Cross validation error with K = 2, p = 3, majority function = uniform, for glass data is: 0.2716450
+Cross validation error with K = 20, p = 1, majority function = uniform, for cancer data is: 0.2594828
+The average Precision for the cancer dataset is: 0.7500000 
+The average Recall for the cancer dataset is: 0.2117647
 ----------------------------
 Results for 3 folds:
 ----------------------------
-Cross validation error of None-Edited knn on glass dataset is 0.28515
-and the average elapsed time is 22803762.00000
-The total elapsed time is: 68411286
+Cross validation error of None-Edited knn on glass dataset is 0.28984
+and the average elapsed time is 19773877.00000
+The total elapsed time is: 59321631
 The total number of instances used in the classification phase is: 428
-Cross validation error of Forwards-Edited knn on glass dataset is 0.34103
-and the average elapsed time is 10347010.33333
-The total elapsed time is: 31041031
-The total number of instances used in the classification phase is: 179
-Cross validation error of Backwards-Edited knn on glass dataset is 0.37865
-and the average elapsed time is 10750783.33333
-The total elapsed time is: 32252350
-The total number of instances used in the classification phase is: 172
+Cross validation error of Forwards-Edited knn on glass dataset is 0.36457
+and the average elapsed time is 8716729.00000
+The total elapsed time is: 26150187
+The total number of instances used in the classification phase is: 180
+Cross validation error of Backwards-Edited knn on glass dataset is 0.39215
+and the average elapsed time is 9271767.00000
+The total elapsed time is: 27815301
+The total number of instances used in the classification phase is: 174
 ----------------------------
 Results for 5 folds:
 ----------------------------
-Cross validation error of None-Edited knn on glass dataset is 0.27132
-and the average elapsed time is 18963299.40000
-The total elapsed time is: 94816497
+Cross validation error of None-Edited knn on glass dataset is 0.26622
+and the average elapsed time is 15048163.40000
+The total elapsed time is: 75240817
 The total number of instances used in the classification phase is: 856
-Cross validation error of Forwards-Edited knn on glass dataset is 0.33632
-and the average elapsed time is 6707312.20000
-The total elapsed time is: 33536561
-The total number of instances used in the classification phase is: 364
-Cross validation error of Backwards-Edited knn on glass dataset is 0.34120
-and the average elapsed time is 6390266.40000
-The total elapsed time is: 31951332
-The total number of instances used in the classification phase is: 335
+Cross validation error of Forwards-Edited knn on glass dataset is 0.31783
+and the average elapsed time is 5832151.40000
+The total elapsed time is: 29160757
+The total number of instances used in the classification phase is: 330
+Cross validation error of Backwards-Edited knn on glass dataset is 0.41130
+and the average elapsed time is 6197766.00000
+The total elapsed time is: 30988830
+The total number of instances used in the classification phase is: 338
 ----------------------------
 Results for 10 folds:
 ----------------------------
-Cross validation error of None-Edited knn on glass dataset is 0.26234
-and the average elapsed time is 8187802.20000
-The total elapsed time is: 81878022
+Cross validation error of None-Edited knn on glass dataset is 0.25195
+and the average elapsed time is 7977699.50000
+The total elapsed time is: 79776995
 The total number of instances used in the classification phase is: 1926
-Cross validation error of Forwards-Edited knn on glass dataset is 0.33182
-and the average elapsed time is 3415416.80000
-The total elapsed time is: 34154168
-The total number of instances used in the classification phase is: 757
-Cross validation error of Backwards-Edited knn on glass dataset is 0.41082
-and the average elapsed time is 3166599.80000
-The total elapsed time is: 31665998
-The total number of instances used in the classification phase is: 721
+Cross validation error of Forwards-Edited knn on glass dataset is 0.34481
+and the average elapsed time is 3898564.70000
+The total elapsed time is: 38985647
+The total number of instances used in the classification phase is: 845
+Cross validation error of Backwards-Edited knn on glass dataset is 0.37468
+and the average elapsed time is 3448438.20000
+The total elapsed time is: 34484382
+The total number of instances used in the classification phase is: 790
 ----------------------------
 Results for 50 folds:
 ----------------------------
-Cross validation error of None-Edited knn on glass dataset is 0.26600
-and the average elapsed time is 1853964.24000
-The total elapsed time is: 92698212
+Cross validation error of None-Edited knn on glass dataset is 0.27000
+and the average elapsed time is 1843355.34000
+The total elapsed time is: 92167767
 The total number of instances used in the classification phase is: 10486
-Cross validation error of Forwards-Edited knn on glass dataset is 0.29800
-and the average elapsed time is 713597.52000
-The total elapsed time is: 35679876
-The total number of instances used in the classification phase is: 4127
-Cross validation error of Backwards-Edited knn on glass dataset is 0.34900
-and the average elapsed time is 678089.62000
-The total elapsed time is: 33904481
-The total number of instances used in the classification phase is: 3935
+Cross validation error of Forwards-Edited knn on glass dataset is 0.29400
+and the average elapsed time is 642898.58000
+The total elapsed time is: 32144929
+The total number of instances used in the classification phase is: 3708
+Cross validation error of Backwards-Edited knn on glass dataset is 0.39000
+and the average elapsed time is 679192.76000
+The total elapsed time is: 33959638
+The total number of instances used in the classification phase is: 3933
 ----------------------------
 Results for 214 folds:
 ----------------------------
 Cross validation error of None-Edited knn on glass dataset is 0.26168
-and the average elapsed time is 436529.55607
-The total elapsed time is: 93417325
+and the average elapsed time is 419501.44393
+The total elapsed time is: 89773309
 The total number of instances used in the classification phase is: 45582
-Cross validation error of Forwards-Edited knn on glass dataset is 0.30374
-and the average elapsed time is 165242.61682
-The total elapsed time is: 35361920
-The total number of instances used in the classification phase is: 17912
-Cross validation error of Backwards-Edited knn on glass dataset is 0.36449
-and the average elapsed time is 181014.15421
-The total elapsed time is: 38737029
-The total number of instances used in the classification phase is: 17899
+Cross validation error of Forwards-Edited knn on glass dataset is 0.31776
+and the average elapsed time is 166865.23832
+The total elapsed time is: 35709161
+The total number of instances used in the classification phase is: 17501
+Cross validation error of Backwards-Edited knn on glass dataset is 0.42523
+and the average elapsed time is 165856.03738
+The total elapsed time is: 35493192
+The total number of instances used in the classification phase is: 17479
 
 
-1. In general, while the number of folds is decreasing, the running time is decreasing as well.
-2. As seen in the results, while the running time is decreasing, the number of instances that 
-are being used in the classification phase is decreasing as well, so there is a connection: As 
-the number of folds increases, the process of 'learning' is being done more times, (which might 
-be the cause for the longer running time), and since it is being done more times, we get more 
-and more instances that are part of the learning process. Meaning, the number of instances that 
-are used in the classification phase is increasing with the number of folds. Even though there 
-are less instances in each fold, as the number of folds is growing, the fact that we run the 
-process more times overcomes the fact thst there are less instances in each fold.
+1. In general, while the number of folds is decreasing, the running time is decreasing as well, that's because as the number of folds increases,
+the process of 'learning' is being done more time which causes longer running time.
+2. As seen in the results, while the running time is decreasing, the number of instances that are being used in the classification phase
+is decreasing as well, so there is a connection: As the number of folds increases, the process of 'learning' is being done more, 
+(which might is the cause for the longer running time), and since it is being done more times, we get more and more instances that are part of the
+learning process. Meaning, the number of instances that are used in the classification phase is increasing with the number of folds.
+Even though there are less instances in each fold as the number of folds is growing, the fact we run the process more times overcomes the fact there
+are less instances in each fold.

@@ -32,8 +32,8 @@ public class MainHW4 {
 
 	public static void main(String[] args) throws Exception {
 		// load data
-		Instances cancerData = loadData("/Users/hilla/Documents/B/ML/6/HW4/src/cancer.txt");
-		Instances glassData = loadData("/Users/hilla/Documents/B/ML/6/HW4/src/glass.txt");
+		Instances cancerData = loadData("cancer.txt");
+		Instances glassData = loadData("glass.txt");
 
 		// Finding the best hyper parameters using 10-folds cross validation,
 		// for 2 different datasets ("glass" & "cancer")
